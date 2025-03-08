@@ -9,4 +9,4 @@ exports.transformText = (text, type, callback) => {
 
     const result = type === 'ul' ? text.toUpperCase() : text.toLowerCase()
     callback(null, result)
-};
+}

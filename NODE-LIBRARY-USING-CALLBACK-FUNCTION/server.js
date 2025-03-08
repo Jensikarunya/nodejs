@@ -1,20 +1,20 @@
 const http = require('http')
-const { mainRoute } = require('./lib/mainRoute')
+const { mainRoute } = require('./Route/mainRoute')
 
 const port = 8000
 
-const server = http.createServer((req, res) => {
-    mainRoute(req, res, (error, res, result) => {
-        if (error) {
-            res.writeHead(400, { 'Content-Type': 'text/plain' })
-            res.write(error)
-        } else {
-            res.writeHead(200, { 'Content-Type': 'text/plain' })
-            res.write(result)
-        }
+const server = http.createServer(async (req, res) => {
+    try{
+        const result = await mainRoute(req)
+        res.writeHead(result.statusCode, { 'Content-Type': result.contentType })
+        res.write(result.content)
+    } catch (error) {
+        res.writeHead(error.statusCode || 500, { 'Content-Type': error.contentType || "text/html" })
+        res.write(error.content || "Internal Server Error")
+    } finally {
         res.end()
-    });
-});
+    }
+})
 
 server.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
